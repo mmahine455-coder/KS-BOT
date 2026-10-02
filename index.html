@@ -6,8 +6,13 @@
     <title>KS Bot - Mini App</title>
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Monetag SDK Tag -->
+    <script src='//libtl.com/sdk.js' data-zone='11939264' data-sdk='show_11939264'></script>
+
     <!-- Adsgram SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+
     <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -32,21 +37,19 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Header with Logo */
+        /* Header SVG Logo */
         .header {
             background: linear-gradient(180deg, #180508 0%, #080808 100%);
-            padding: 25px 20px 40px 20px;
+            padding: 25px 20px 30px 20px;
             text-align: center;
             border-bottom: 1px solid rgba(255, 23, 68, 0.2);
         }
 
-        .header-logo-img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
+        .header-logo-svg {
+            width: 70px;
+            height: 70px;
             margin-bottom: 8px;
-            border-radius: 12px;
-            filter: drop-shadow(0px 4px 10px rgba(255, 23, 68, 0.4));
+            filter: drop-shadow(0px 4px 10px rgba(255, 23, 68, 0.5));
         }
 
         .header h1 {
@@ -61,7 +64,7 @@
         .balance-card {
             background: #121212;
             border: 1px solid rgba(255, 23, 68, 0.3);
-            margin: -30px 20px 20px 20px;
+            margin: -20px 20px 20px 20px;
             padding: 20px;
             border-radius: 16px;
             text-align: center;
@@ -97,6 +100,39 @@
             color: var(--accent-red);
         }
 
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1a1a1a;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #333;
+        }
+
+        .task-info { display: flex; align-items: center; gap: 12px; }
+        .task-info i { font-size: 20px; color: var(--accent-red); }
+        .task-text h4 { margin: 0; font-size: 14px; color: #fff; }
+        .task-text p { margin: 2px 0 0 0; font-size: 12px; color: var(--accent-green); font-weight: 600; }
+
+        .btn-small {
+            background: var(--accent-red);
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-small:disabled {
+            background: #333;
+            color: #777;
+            cursor: not-allowed;
+        }
+
         .btn {
             background: linear-gradient(135deg, #d50000, #ff1744);
             color: #fff;
@@ -111,7 +147,14 @@
             transition: 0.2s;
         }
 
-        .btn:active { transform: scale(0.98); }
+        .btn:disabled {
+            background: #333 !important;
+            color: #777 !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+        }
+
+        .btn:active:not(:disabled) { transform: scale(0.98); }
 
         .payment-options { display: flex; gap: 15px; margin: 15px 0; }
 
@@ -123,9 +166,13 @@
             padding: 12px;
             text-align: center;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
         }
 
-        .payment-card img { width: 45px; height: 45px; object-fit: contain; display: block; margin: 0 auto 5px auto; }
+        .payment-card svg { width: 40px; height: 40px; }
         .payment-card.selected-bkash { border-color: #e2136e; background: rgba(226, 19, 110, 0.15); }
         .payment-card.selected-nagad { border-color: #f7921e; background: rgba(247, 146, 30, 0.15); }
 
@@ -141,6 +188,52 @@
             box-sizing: border-box;
         }
 
+        .wheel-container { text-align: center; margin: 20px 0; position: relative; }
+
+        .wheel {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 5px solid var(--accent-red);
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: conic-gradient(#d50000 0deg 90deg, #111 90deg 180deg, #ff1744 180deg 270deg, #222 270deg 360deg);
+            transition: transform 3s cubic-bezier(0.15, 0.85, 0.35, 1.2);
+            box-shadow: 0 0 20px rgba(255, 23, 68, 0.4);
+        }
+
+        .wheel-center {
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            border-radius: 50%;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .quiz-container {
+            background: #0d0d0d;
+            border: 1px dashed var(--accent-red);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .leaderboard-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #222;
+            font-size: 13px;
+        }
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -154,14 +247,17 @@
         }
 
         .nav-item { text-align: center; color: var(--text-sub); font-size: 11px; cursor: pointer; }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item i { font-size: 18px; display: block; margin-bottom: 4px; }
         .nav-item.active { color: var(--accent-red); font-weight: 600; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <img class="header-logo-img" src="https://i.ibb.co/C31bvf2y/9a030de40d4b3182a5eab785a98a9188.jpg" alt="KS Bot Logo">
+        <svg class="header-logo-svg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="#141414" stroke="#ff1744" stroke-width="4"/>
+            <text x="50%" y="58%" font-size="28" font-weight="bold" fill="#ff1744" text-anchor="middle" font-family="sans-serif">KS</text>
+        </svg>
         <h1>KS Bot</h1>
         <p>Watch Ads & Earn BDT</p>
     </div>
@@ -173,23 +269,98 @@
 
     <!-- HOME PAGE -->
     <div id="homePage" class="page active">
+        <!-- Daily Bonus -->
         <div class="card">
-            <div class="card-title"><i class="fa-solid fa-bullhorn"></i> নোটিশ</div>
-            <p style="font-size: 13px; color: var(--text-sub); margin: 0; line-height: 1.6;">
-                KS Bot-এ স্বাগতম! বিজ্ঞাপন দেখুন এবং ১০০ টাকা ব্যালেন্স হলেই সরাসরি আপনার বিকাশ বা নগদ নম্বরে উইথড্র করুন।
-            </p>
+            <div class="card-title"><i class="fa-solid fa-gift"></i> ডেইলি চেক-ইন বোনাস</div>
+            <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 10px;">প্রতিদিন অ্যাপ ওপেন করে নিন ফ্রি ৳ ০.২০ টাকা বোনাস!</p>
+            <button class="btn" id="dailyBtn" onclick="claimDailyBonus()"><i class="fa-solid fa-calendar-check"></i> ডেইলি বোনাস ক্লেম করুন</button>
         </div>
+
+        <!-- Math Quiz / Captcha Task -->
         <div class="card">
-            <button class="btn" onclick="switchPage('adsPage')"><i class="fa-solid fa-play"></i> এডস দেখা শুরু করুন</button>
+            <div class="card-title"><i class="fa-solid fa-calculator"></i> সহজ ম্যাথ কুইজ (ক্যাপচা)</div>
+            <p style="font-size: 13px; color: var(--text-sub);">সঠিক উত্তর দিয়ে ইনকাম করুন <b>৳ ০.২০ টাকা</b></p>
+            <div class="quiz-container">
+                <p style="font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 10px;" id="mathProblem">5 + 3 = ?</p>
+                <input type="number" id="quizAnswer" placeholder="উত্তর লিখুন" style="text-align: center;">
+                <button class="btn" onclick="checkMathQuiz()"><i class="fa-solid fa-check"></i> উত্তর সাবমিট করুন</button>
+            </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-trophy"></i> টপ আর্নার লিস্ট (Top 10)</div>
+            <div id="leaderboardList">
+                <div class="leaderboard-row"><span>🥇 ১. শফিক আহমেদ</span><strong style="color:var(--accent-green)">৳ ১৮৫০.০০</strong></div>
+                <div class="leaderboard-row"><span>🥈 ২. তানভির ইসলাম</span><strong style="color:var(--accent-green)">৳ ১৬২০.০০</strong></div>
+                <div class="leaderboard-row"><span>🥉 ৩. সাব্বির হোসেন</span><strong style="color:var(--accent-green)">৳ ১৫১০.০০</strong></div>
+            </div>
         </div>
     </div>
 
-    <!-- ADS PAGE -->
+    <!-- TASKS PAGE -->
+    <div id="tasksPage" class="page">
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-list-check"></i> সোশ্যাল টাস্ক সম্পন্ন করুন</div>
+            
+            <div class="task-item">
+                <div class="task-info">
+                    <i class="fa-brands fa-telegram"></i>
+                    <div class="task-text">
+                        <h4>চ্যানেলে জয়েন করুন</h4>
+                        <p>+ ৳ ০.৫০</p>
+                    </div>
+                </div>
+                <button class="btn-small" id="task1Btn" onclick="doTask(1, 'https://t.me/ksbotb', 0.50)">ক্লেম</button>
+            </div>
+
+            <div class="task-item">
+                <div class="task-info">
+                    <i class="fa-solid fa-users"></i>
+                    <div class="task-text">
+                        <h4>গ্রুপে জয়েন করুন</h4>
+                        <p>+ ৳ ০.৫০</p>
+                    </div>
+                </div>
+                <button class="btn-small" id="task2Btn" onclick="doTask(2, 'https://t.me/ksbotb', 0.50)">ক্লেম</button>
+            </div>
+
+            <div class="task-item">
+                <div class="task-info">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <div class="task-text">
+                        <h4>ফ্রেন্ডস ইনভাইট করুন</h4>
+                        <p>+ ৳ ২.০০</p>
+                    </div>
+                </div>
+                <button class="btn-small" onclick="shareInviteLink()">শেয়ার</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADS PAGE (Monetag Ads) -->
     <div id="adsPage" class="page">
         <div class="card" style="text-align: center;">
-            <div class="card-title" style="justify-content: center;"><i class="fa-solid fa-tv"></i> Adgram Sponsored Ads</div>
-            <p style="font-size: 13px; color: var(--text-sub);">প্রতিটি এড দেখার জন্য পাবেন ৳ ০.৫০ টাকা</p>
-            <button class="btn" onclick="showAdgramAd()"><i class="fa-solid fa-circle-play"></i> বিজ্ঞাপন দেখুন</button>
+            <div class="card-title" style="justify-content: center;"><i class="fa-solid fa-tv"></i> এডস দেখে আয়</div>
+            <p style="font-size: 13px; color: var(--text-sub);">পরপর ২টি এড দেখলে পাবেন <b>৳ ১.০০ টাকা</b></p>
+            <p style="font-size: 12px; color: var(--accent-red);" id="adStepText">অগ্রগতি: (০/২ এড দেখা হয়েছে)</p>
+            <button class="btn" id="watchAdBtn" onclick="showMonetagAd()"><i class="fa-solid fa-circle-play"></i> এডস দেখা শুরু করুন</button>
+        </div>
+    </div>
+
+    <!-- SPIN PAGE (Adsgram Ads) -->
+    <div id="spinPage" class="page">
+        <div class="card" style="text-align: center;">
+            <div class="card-title" style="justify-content: center;"><i class="fa-solid fa-arrows-spin"></i> লাকি স্পিন</div>
+            <p style="font-size: 13px; color: var(--text-sub);">এড দেখুন এবং চাকা ঘুরিয়ে জিতে নিন ৳ ০.১০ থেকে ৳ ১.০০ টাকা!</p>
+            
+            <div class="wheel-container">
+                <div class="wheel" id="spinWheel">
+                    <div class="wheel-center">SPIN</div>
+                </div>
+            </div>
+
+            <button class="btn" id="spinBtn" onclick="startSpin()"><i class="fa-solid fa-play"></i> এড দেখে স্পিন করুন</button>
         </div>
     </div>
 
@@ -215,11 +386,20 @@
             
             <div class="payment-options">
                 <div class="payment-card selected-bkash" id="bkashCard" onclick="selectMethod('bKash')">
-                    <img src="https://raw.githubusercontent.com/bkash-developer/bkash-developer-logo/main/bKash-Logo.png" alt="bKash">
+                    <svg viewBox="0 0 100 100">
+                        <rect width="100" height="100" rx="20" fill="#e2136e"/>
+                        <path d="M20 30 L50 70 L80 30 Z" fill="#fff"/>
+                        <text x="50" y="55" font-size="18" font-weight="bold" fill="#e2136e" text-anchor="middle">bKash</text>
+                    </svg>
                     <span style="font-size: 12px; font-weight: 600;">বিকাশ</span>
                 </div>
+
                 <div class="payment-card" id="nagadCard" onclick="selectMethod('Nagad')">
-                    <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" alt="Nagad">
+                    <svg viewBox="0 0 100 100">
+                        <rect width="100" height="100" rx="20" fill="#f7921e"/>
+                        <circle cx="50" cy="50" r="25" fill="#fff"/>
+                        <text x="50" y="56" font-size="16" font-weight="bold" fill="#f7921e" text-anchor="middle">নগদ</text>
+                    </svg>
                     <span style="font-size: 12px; font-weight: 600;">নগদ</span>
                 </div>
             </div>
@@ -228,7 +408,7 @@
             <input type="text" id="accNumber" placeholder="017XXXXXXXX">
 
             <label style="font-size: 12px; color: var(--text-sub);">টাকার পরিমাণ (BDT):</label>
-            <input type="number" id="withdrawAmt" placeholder="সর্বনিম্ন ১০০ টাকা">
+            <input type="number" id="withdrawAmt" placeholder="সর্বনিম্ন ১০০০ টাকা">
 
             <button class="btn" onclick="handleWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
         </div>
@@ -237,8 +417,10 @@
     <!-- BOTTOM NAV -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchPage('homePage', this)"><i class="fa-solid fa-house"></i>হোম</div>
+        <div class="nav-item" onclick="switchPage('tasksPage', this)"><i class="fa-solid fa-list-check"></i>টাস্ক</div>
         <div class="nav-item" onclick="switchPage('adsPage', this)"><i class="fa-solid fa-play"></i>এডস</div>
-        <div class="nav-item" onclick="switchPage('walletPage', this)"><i class="fa-solid fa-wallet"></i>ওয়ালেট</div>
+        <div class="nav-item" onclick="switchPage('spinPage', this)"><i class="fa-solid fa-arrows-spin"></i>স্পিন</div>
+        <div class="nav-item" onclick="switchPage('walletPage', this)"><i class="fa-solid fa-wallet"></i>ওয়ালেট</div>
         <div class="nav-item" onclick="switchPage('withdrawPage', this)"><i class="fa-solid fa-money-bill-transfer"></i>উইথড্র</div>
     </div>
 
@@ -246,20 +428,37 @@
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if (tg) {
             tg.expand();
+            tg.ready();
         }
 
-        // Bot Configuration
         const TELEGRAM_BOT_TOKEN = "8698935861:AAHaLypIYe36l5Denp4sThNqQ5_eoi6_Z8w"; 
         const ADMIN_CHAT_ID = "8255077276"; 
 
-        let userBalance = 0.00;
-        let totalAdsWatched = 0;
-        let totalWithdrawnAmount = 0.00;
-        let selectedPaymentMethod = 'bKash';
-        const REWARD_PER_AD = 0.50; 
+        // Adsgram Controller Setup
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "int-51468" }) : null;
 
-        // Adsgram Block ID (আপনার নতুন Interstitial ID বসানো হয়েছে)
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "int-51419" }) : null;
+        let userBalance = parseFloat(localStorage.getItem('ks_balance')) || 0.00;
+        let totalAdsWatched = parseInt(localStorage.getItem('ks_ads')) || 0;
+        let totalWithdrawnAmount = parseFloat(localStorage.getItem('ks_withdrawn')) || 0.00;
+        let lastDailyClaim = localStorage.getItem('ks_daily_date') || '';
+        let completedTasks = JSON.parse(localStorage.getItem('ks_tasks')) || [];
+        let selectedPaymentMethod = 'bKash';
+
+        let currentAdStep = 0;
+        let currentRotation = 0;
+        let mathNum1, mathNum2, mathCorrectAns;
+
+        updateUI();
+        checkDailyBonusStatus();
+        updateTaskButtons();
+        generateMathQuiz();
+
+        function saveData() {
+            localStorage.setItem('ks_balance', userBalance.toString());
+            localStorage.setItem('ks_ads', totalAdsWatched.toString());
+            localStorage.setItem('ks_withdrawn', totalWithdrawnAmount.toString());
+            localStorage.setItem('ks_tasks', JSON.stringify(completedTasks));
+        }
 
         function switchPage(pageId, navEl) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -283,32 +482,203 @@
             }
         }
 
-        function showAdgramAd() {
-            if (!AdController) {
-                alert("Adgram Block ID এখনো কনফিগার করা হয়নি!");
+        /* --- MATH QUIZ LOGIC --- */
+        function generateMathQuiz() {
+            mathNum1 = Math.floor(Math.random() * 12) + 1;
+            mathNum2 = Math.floor(Math.random() * 10) + 1;
+            mathCorrectAns = mathNum1 + mathNum2;
+            document.getElementById('mathProblem').innerText = `${mathNum1} + ${mathNum2} = ?`;
+        }
+
+        function checkMathQuiz() {
+            const ansInput = document.getElementById('quizAnswer');
+            const userAns = parseInt(ansInput.value);
+
+            if (userAns === mathCorrectAns) {
+                userBalance += 0.20;
+                saveData();
+                updateUI();
+                alert("সঠিক উত্তর! আপনি ৳ ০.২০ টাকা পেয়েছেন।");
+                ansInput.value = '';
+                generateMathQuiz();
+            } else {
+                alert("ভুল উত্তর! আবার চেষ্টা করুন।");
+            }
+        }
+
+        /* --- TASK LOGIC --- */
+        function updateTaskButtons() {
+            if(completedTasks.includes(1)) {
+                const b = document.getElementById('task1Btn');
+                if(b) { b.disabled = true; b.innerText = "সম্পন্ন"; }
+            }
+            if(completedTasks.includes(2)) {
+                const b = document.getElementById('task2Btn');
+                if(b) { b.disabled = true; b.innerText = "সম্পন্ন"; }
+            }
+        }
+
+        function doTask(taskId, url, reward) {
+            if(completedTasks.includes(taskId)) return;
+            window.open(url, '_blank');
+            
+            setTimeout(() => {
+                userBalance += reward;
+                completedTasks.push(taskId);
+                saveData();
+                updateUI();
+                updateTaskButtons();
+                alert(`অভিনন্দন! টাস্ক সম্পন্ন করায় আপনি ৳ ${reward.toFixed(2)} টাকা পেয়েছেন।`);
+            }, 3000);
+        }
+
+        function shareInviteLink() {
+            const botUrl = "https://t.me/kayes4300_bot";
+            if(tg) {
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}&text=${encodeURIComponent("KS Bot-এ যুক্ত হয়ে এড দেখে আয় করুন!")}`);
+            } else {
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}`, '_blank');
+            }
+        }
+
+        /* --- MONETAG REWARDED AD LOGIC (Ads Page) --- */
+        function showMonetagAd() {
+            if (typeof show_11939264 !== 'function') {
+                alert("বিজ্ঞাপন লোড হচ্ছে, অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন...");
                 return;
             }
-            AdController.show().then(() => {
-                userBalance += REWARD_PER_AD;
+
+            const btn = document.getElementById('watchAdBtn');
+            btn.disabled = true;
+
+            show_11939264().then(() => {
                 totalAdsWatched += 1;
-                updateUI();
-                alert(`অভিনন্দন! আপনি ৳ ${REWARD_PER_AD.toFixed(2)} টাকা পেয়েছেন।`);
+                currentAdStep += 1;
+
+                if (currentAdStep === 1) {
+                    document.getElementById('adStepText').innerText = "অগ্রগতি: (১/২ এড দেখা হয়েছে - আর ১টি বাকি)";
+                    alert("১ম এড দেখা সম্পন্ন! আর ১টি এড দেখলেই পাবেন ৳ ১.০০ টাকা।");
+                    btn.disabled = false;
+                } else if (currentAdStep === 2) {
+                    userBalance += 1.00;
+                    currentAdStep = 0;
+                    document.getElementById('adStepText').innerText = "অগ্রগতি: (০/২ এড দেখা হয়েছে)";
+                    saveData();
+                    updateUI();
+
+                    alert("অভিনন্দন! ২টি এড দেখা সম্পন্ন হয়েছে। আপনি ৳ ১.০০ টাকা পেয়েছেন।");
+                    startTimer(btn, 15, "এডস দেখা শুরু করুন");
+                }
             }).catch((err) => {
-                console.log("Ad status:", err);
-                alert("বিজ্ঞাপন দেখা সম্পন্ন হয়নি বা কোনো এড লোড হয়নি। আবার চেষ্টা করুন।");
+                btn.disabled = false;
+                alert("বিজ্ঞাপনটি সম্পূর্ণ দেখা হয়নি বা বাতিল করা হয়েছে।");
             });
         }
 
-        function handleWithdraw() {
-            const num = document.getElementById('accNumber').value;
+        /* --- ADSGRAM REWARDED AD LOGIC (Spin Page) --- */
+        function startSpin() {
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
+
+            if (AdController) {
+                AdController.show().then((result) => {
+                    totalAdsWatched += 1;
+                    executeSpinLogic(btn);
+                }).catch((result) => {
+                    btn.disabled = false;
+                    alert("স্পিন ঘুরানোর জন্য এড সম্পূর্ণ দেখতে হবে।");
+                });
+            } else {
+                if (typeof show_11939264 === 'function') {
+                    show_11939264().then(() => {
+                        totalAdsWatched += 1;
+                        executeSpinLogic(btn);
+                    }).catch(() => {
+                        btn.disabled = false;
+                        alert("এড লোড করতে সমস্যা হয়েছে।");
+                    });
+                } else {
+                    btn.disabled = false;
+                    alert("বিজ্ঞাপন লোড হচ্ছে, কিছুক্ষন পরে আবার চেষ্টা করুন।");
+                }
+            }
+        }
+
+        function executeSpinLogic(btn) {
+            const wheel = document.getElementById('spinWheel');
+            const randomAngle = Math.floor(Math.random() * 360) + 1440;
+            currentRotation += randomAngle;
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                const rewards = [0.10, 0.20, 0.30, 0.50, 1.00];
+                const wonAmount = rewards[Math.floor(Math.random() * rewards.length)];
+
+                userBalance += wonAmount;
+                saveData();
+                updateUI();
+
+                alert(`অভিনন্দন! স্পিন করে আপনি জিতেছেন ৳ ${wonAmount.toFixed(2)} টাকা!`);
+                startTimer(btn, 15, "এড দেখে স্পিন করুন");
+            }, 3200);
+        }
+
+        /* --- DAILY BONUS LOGIC --- */
+        function checkDailyBonusStatus() {
+            const today = new Date().toDateString();
+            const btn = document.getElementById('dailyBtn');
+            if (lastDailyClaim === today) {
+                btn.disabled = true;
+                btn.innerText = "আজকের বোনাস নেওয়া হয়েছে";
+            }
+        }
+
+        function claimDailyBonus() {
+            const today = new Date().toDateString();
+            if (lastDailyClaim === today) {
+                alert("আজকের বোনাস আপনি ইতিমধ্যে নিয়ে নিয়েছেন!");
+                return;
+            }
+
+            userBalance += 0.20;
+            lastDailyClaim = today;
+            localStorage.setItem('ks_daily_date', today);
+
+            saveData();
+            updateUI();
+            checkDailyBonusStatus();
+
+            alert("অভিনন্দন! আপনি ৳ ০.২০ টাকা ডেইলি বোনাস পেয়েছেন।");
+        }
+
+        function startTimer(buttonEl, seconds, defaultText) {
+            let leftSec = seconds;
+            buttonEl.disabled = true;
+            buttonEl.innerText = `অপেক্ষা করুন (${leftSec}s)...`;
+
+            const timer = setInterval(() => {
+                leftSec--;
+                if (leftSec > 0) {
+                    buttonEl.innerText = `অপেক্ষা করুন (${leftSec}s)...`;
+                } else {
+                    clearInterval(timer);
+                    buttonEl.disabled = false;
+                    buttonEl.innerText = defaultText;
+                }
+            }, 1000);
+        }
+
+        /* --- WITHDRAW LOGIC (1000 BDT) --- */
+        async function handleWithdraw() {
+            const num = document.getElementById('accNumber').value.trim();
             const amt = parseFloat(document.getElementById('withdrawAmt').value);
 
             if(!num || num.length < 11) {
                 alert("দয়া করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন!");
                 return;
             }
-            if(isNaN(amt) || amt < 100) {
-                alert("সর্বনিম্ন ১০০ টাকা উইথড্র করতে পারবেন!");
+            if(isNaN(amt) || amt < 1000) {
+                alert("সর্বনিম্ন ১০০০ টাকা উইথড্র করতে পারবেন!");
                 return;
             }
             if(amt > userBalance) {
@@ -319,26 +689,35 @@
             const telegramUser = (tg && tg.initDataUnsafe?.user?.username) ? `@${tg.initDataUnsafe.user.username}` : ((tg && tg.initDataUnsafe?.user?.first_name) || "Unknown User");
             const message = `🚨 *নতুন উইথড্র রিকোয়েস্ট (KS Bot)*\n\n👤 ইউজার: ${telegramUser}\n📱 মেথড: ${selectedPaymentMethod}\n📞 নম্বর: \`${num}\`\n💰 পরিমাণ: ${amt} BDT`;
 
-            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: ADMIN_CHAT_ID,
-                    text: message,
-                    parse_mode: 'Markdown'
-                })
-            }).then(res => {
-                userBalance -= amt;
-                totalWithdrawnAmount += amt;
-                updateUI();
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: ADMIN_CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
 
-                document.getElementById('accNumber').value = '';
-                document.getElementById('withdrawAmt').value = '';
+                const data = await response.json();
 
-                alert(`আপনার ${amt} টাকার উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে।`);
-            }).catch(err => {
-                alert("উইথড্র প্রসেস করতে সমস্যা হয়েছে।");
-            });
+                if (data.ok) {
+                    userBalance -= amt;
+                    totalWithdrawnAmount += amt;
+                    saveData();
+                    updateUI();
+
+                    document.getElementById('accNumber').value = '';
+                    document.getElementById('withdrawAmt').value = '';
+
+                    alert(`আপনার ${amt} টাকার উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে।`);
+                } else {
+                    alert("উইথড্র মেসেজ পাঠানো যায়নি! এডমিন চ্যাট শুরু করেছেন কি না পরীক্ষা করুন।");
+                }
+            } catch (err) {
+                alert("নেটওয়ার্ক সমস্যার কারণে উইথড্র জমা হয়নি।");
+            }
         }
 
         function updateUI() {
@@ -348,4 +727,4 @@
         }
     </script>
 </body>
-        </html>
+    </html>
