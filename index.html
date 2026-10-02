@@ -161,7 +161,7 @@
 <body>
 
     <div class="header">
-        <img class="header-logo-img" src="https://i.ibb.co/6cMDYhW/9a030de40d4b3182a5eab785a98a9188.jpg" alt="KS Bot Logo">
+        <img class="header-logo-img" src="https://i.ibb.co/C31bvf2y/9a030de40d4b3182a5eab785a98a9188.jpg" alt="KS Bot Logo">
         <h1>KS Bot</h1>
         <p>Watch Ads & Earn BDT</p>
     </div>
@@ -176,7 +176,7 @@
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-bullhorn"></i> নোটিশ</div>
             <p style="font-size: 13px; color: var(--text-sub); margin: 0; line-height: 1.6;">
-                KS Bot-এ স্বাগতম! বিজ্ঞাপন দেখুন এবং ১০০০ টাকা ব্যালেন্স হলেই সরাসরি আপনার বিকাশ বা নগদ নম্বরে উইথড্র করুন।
+                KS Bot-এ স্বাগতম! বিজ্ঞাপন দেখুন এবং ১০০ টাকা ব্যালেন্স হলেই সরাসরি আপনার বিকাশ বা নগদ নম্বরে উইথড্র করুন।
             </p>
         </div>
         <div class="card">
@@ -228,7 +228,7 @@
             <input type="text" id="accNumber" placeholder="017XXXXXXXX">
 
             <label style="font-size: 12px; color: var(--text-sub);">টাকার পরিমাণ (BDT):</label>
-            <input type="number" id="withdrawAmt" placeholder="সর্বনিম্ন ১০০০ টাকা">
+            <input type="number" id="withdrawAmt" placeholder="সর্বনিম্ন ১০০ টাকা">
 
             <button class="btn" onclick="handleWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
         </div>
@@ -258,7 +258,7 @@
         let selectedPaymentMethod = 'bKash';
         const REWARD_PER_AD = 0.50; 
 
-        // Adsgram Block ID (আপনার নতুন Interstitial ID বসানো হয়েছে)
+        // Adsgram Block ID (আপনার নতুন Interstitial ID বসানো হয়েছে)
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "int-51419" }) : null;
 
         function switchPage(pageId, navEl) {
@@ -295,7 +295,7 @@
                 alert(`অভিনন্দন! আপনি ৳ ${REWARD_PER_AD.toFixed(2)} টাকা পেয়েছেন।`);
             }).catch((err) => {
                 console.log("Ad status:", err);
-                alert("বিজ্ঞাপন দেখা সম্পন্ন হয়নি বা কোনো এড লোড হয়নি। আবার চেষ্টা করুন।");
+                alert("বিজ্ঞাপন দেখা সম্পন্ন হয়নি বা কোনো এড লোড হয়নি। আবার চেষ্টা করুন।");
             });
         }
 
@@ -307,8 +307,8 @@
                 alert("দয়া করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন!");
                 return;
             }
-            if(isNaN(amt) || amt < 1000) {
-                alert("সর্বনিম্ন ১০০০ টাকা উইথড্র করতে পারবেন!");
+            if(isNaN(amt) || amt < 100) {
+                alert("সর্বনিম্ন ১০০ টাকা উইথড্র করতে পারবেন!");
                 return;
             }
             if(amt > userBalance) {
@@ -348,4 +348,4 @@
         }
     </script>
 </body>
-                                                                        </html>
+        </html>
