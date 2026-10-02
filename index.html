@@ -532,12 +532,15 @@
             }, 3000);
         }
 
+        /* --- SHARE INVITE LINK (NEW PREVIEW FORMAT) --- */
         function shareInviteLink() {
-            const botUrl = "https://t.me/kayes4300_bot";
-            if(tg) {
-                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}&text=${encodeURIComponent("KS Bot-এ যুক্ত হয়ে এড দেখে আয় করুন!")}`);
+            const shareText = "KS Bot - Real Earning Hub 💸\n💸 Fast Task | 🎁 Bonus | 👥 Refer\n✅ Easy & Smooth Earning\n🥇 Easy & Trusted ⭐";
+            const appLink = "https://t.me/kayes4300_bot/app";
+
+            if (tg) {
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(appLink)}&text=${encodeURIComponent(shareText)}`);
             } else {
-                window.open(`https://t.me/share/url?url=${encodeURIComponent(botUrl)}`, '_blank');
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(appLink)}&text=${encodeURIComponent(shareText)}`, '_blank');
             }
         }
 
