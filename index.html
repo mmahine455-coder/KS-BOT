@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KS Bot - Mini App</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Adsgram SDK -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #080808;
+            --card-bg: #141414;
+            --accent-red: #ff1744;
+            --accent-green: #00e676;
+            --text-main: #ffffff;
+            --text-sub: #a0a0a0;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 80px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Header with Logo */
+        .header {
+            background: linear-gradient(180deg, #180508 0%, #080808 100%);
+            padding: 25px 20px 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 23, 68, 0.2);
+        }
+
+        .header-logo-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            filter: drop-shadow(0px 4px 10px rgba(255, 23, 68, 0.4));
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .header p { margin: 5px 0 0 0; color: var(--accent-red); font-size: 13px; font-weight: 600; }
+
+        .balance-card {
+            background: #121212;
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            margin: -30px 20px 20px 20px;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.8);
+        }
+
+        .balance-title { color: var(--text-sub); font-size: 14px; margin-bottom: 5px; }
+        .balance-amount { font-size: 32px; font-weight: 700; color: var(--accent-green); }
+
+        .page { display: none; padding: 0 20px; animation: fadeIn 0.3s ease-in-out; }
+        .page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border: 1px solid #222;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-red);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #d50000, #ff1744);
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 23, 68, 0.3);
+            transition: 0.2s;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        .payment-options { display: flex; gap: 15px; margin: 15px 0; }
+
+        .payment-card {
+            flex: 1;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .payment-card img { width: 45px; height: 45px; object-fit: contain; display: block; margin: 0 auto 5px auto; }
+        .payment-card.selected-bkash { border-color: #e2136e; background: rgba(226, 19, 110, 0.15); }
+        .payment-card.selected-nagad { border-color: #f7921e; background: rgba(247, 146, 30, 0.15); }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #101010;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #222;
+        }
+
+        .nav-item { text-align: center; color: var(--text-sub); font-size: 11px; cursor: pointer; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item.active { color: var(--accent-red); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img class="header-logo-img" src="https://i.ibb.co/6cMDYhW/9a030de40d4b3182a5eab785a98a9188.jpg" alt="KS Bot Logo">
+        <h1>KS Bot</h1>
+        <p>Watch Ads & Earn BDT</p>
+    </div>
+
+    <div class="balance-card">
+        <div class="balance-title">বর্তমান ব্যালেন্স</div>
+        <div class="balance-amount">৳ <span id="userBalance">0.00</span></div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active">
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-bullhorn"></i> নোটিশ</div>
+            <p style="font-size: 13px; color: var(--text-sub); margin: 0; line-height: 1.6;">
+                KS Bot-এ স্বাগতম! বিজ্ঞাপন দেখুন এবং ১০০০ টাকা ব্যালেন্স হলেই সরাসরি আপনার বিকাশ বা নগদ নম্বরে উইথড্র করুন।
+            </p>
+        </div>
+        <div class="card">
+            <button class="btn" onclick="switchPage('adsPage')"><i class="fa-solid fa-play"></i> এডস দেখা শুরু করুন</button>
+        </div>
+    </div>
+
+    <!-- ADS PAGE -->
+    <div id="adsPage" class="page">
+        <div class="card" style="text-align: center;">
+            <div class="card-title" style="justify-content: center;"><i class="fa-solid fa-tv"></i> Adgram Sponsored Ads</div>
+            <p style="font-size: 13px; color: var(--text-sub);">প্রতিটি এড দেখার জন্য পাবেন ৳ ০.৫০ টাকা</p>
+            <button class="btn" onclick="showAdgramAd()"><i class="fa-solid fa-circle-play"></i> বিজ্ঞাপন দেখুন</button>
+        </div>
+    </div>
+
+    <!-- WALLET PAGE -->
+    <div id="walletPage" class="page">
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-wallet"></i> আপনার ইতিহাস</div>
+            <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222;">
+                <span style="color: var(--text-sub);">মোট দেখা এড:</span>
+                <strong id="totalAds">0 টি</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px 0;">
+                <span style="color: var(--text-sub);">মোট উত্তোলন:</span>
+                <strong id="totalWithdrawn" style="color: var(--accent-red);">৳ 0.00</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- WITHDRAW PAGE -->
+    <div id="withdrawPage" class="page">
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-money-bill-transfer"></i> উইথড্র ফর্ম</div>
+            
+            <div class="payment-options">
+                <div class="payment-card selected-bkash" id="bkashCard" onclick="selectMethod('bKash')">
+                    <img src="https://raw.githubusercontent.com/bkash-developer/bkash-developer-logo/main/bKash-Logo.png" alt="bKash">
+                    <span style="font-size: 12px; font-weight: 600;">বিকাশ</span>
+                </div>
+                <div class="payment-card" id="nagadCard" onclick="selectMethod('Nagad')">
+                    <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" alt="Nagad">
+                    <span style="font-size: 12px; font-weight: 600;">নগদ</span>
+                </div>
+            </div>
+
+            <label style="font-size: 12px; color: var(--text-sub);">একাউন্ট নম্বর:</label>
+            <input type="text" id="accNumber" placeholder="017XXXXXXXX">
+
+            <label style="font-size: 12px; color: var(--text-sub);">টাকার পরিমাণ (BDT):</label>
+            <input type="number" id="withdrawAmt" placeholder="সর্বনিম্ন ১০০০ টাকা">
+
+            <button class="btn" onclick="handleWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('homePage', this)"><i class="fa-solid fa-house"></i>হোম</div>
+        <div class="nav-item" onclick="switchPage('adsPage', this)"><i class="fa-solid fa-play"></i>এডস</div>
+        <div class="nav-item" onclick="switchPage('walletPage', this)"><i class="fa-solid fa-wallet"></i>ওয়ালেট</div>
+        <div class="nav-item" onclick="switchPage('withdrawPage', this)"><i class="fa-solid fa-money-bill-transfer"></i>উইথড্র</div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Bot Configuration (আপনার দেওয়া অরিজিনাল ডাটা বসানো হয়েছে)
+        const TELEGRAM_BOT_TOKEN = "8698935861:AAHaLypIYe36l5Denp4sThNqQ5_eoi6_Z8w"; 
+        const ADMIN_CHAT_ID = "8255077276"; 
+
+        let userBalance = 0.00;
+        let totalAdsWatched = 0;
+        let totalWithdrawnAmount = 0.00;
+        let selectedPaymentMethod = 'bKash';
+        const REWARD_PER_AD = 0.50; 
+
+        // Adgram Block ID পেলে "YOUR_ADGRAM_BLOCK_ID" জায়গায় বসাবেন
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_ADGRAM_BLOCK_ID" }) : null;
+
+        function switchPage(pageId, navEl) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if(navEl) {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                navEl.classList.add('active');
+            }
+        }
+
+        function selectMethod(method) {
+            selectedPaymentMethod = method;
+            const bkash = document.getElementById('bkashCard');
+            const nagad = document.getElementById('nagadCard');
+            if(method === 'bKash') {
+                bkash.className = 'payment-card selected-bkash';
+                nagad.className = 'payment-card';
+            } else {
+                bkash.className = 'payment-card';
+                nagad.className = 'payment-card selected-nagad';
+            }
+        }
+
+        function showAdgramAd() {
+            if (!AdController) {
+                alert("Adgram Block ID এখনো কনফিগার করা হয়নি!");
+                return;
+            }
+            AdController.show().then(() => {
+                userBalance += REWARD_PER_AD;
+                totalAdsWatched += 1;
+                updateUI();
+                alert(`অভিনন্দন! আপনি ৳ ${REWARD_PER_AD.toFixed(2)} টাকা পেয়েছেন।`);
+            }).catch(() => {
+                alert("বিজ্ঞাপন দেখা সম্পন্ন হয়নি। আবার চেষ্টা করুন।");
+            });
+        }
+
+        function handleWithdraw() {
+            const num = document.getElementById('accNumber').value;
+            const amt = parseFloat(document.getElementById('withdrawAmt').value);
+
+            if(!num || num.length < 11) {
+                alert("দয়া করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন!");
+                return;
+            }
+            if(isNaN(amt) || amt < 1000) {
+                alert("সর্বনিম্ন ১০০০ টাকা উইথড্র করতে পারবেন!");
+                return;
+            }
+            if(amt > userBalance) {
+                alert("আপনার ওয়ালেটে পর্যাপ্ত ব্যালেন্স নেই!");
+                return;
+            }
+
+            const telegramUser = tg.initDataUnsafe?.user?.username ? `@${tg.initDataUnsafe.user.username}` : (tg.initDataUnsafe?.user?.first_name || "Unknown User");
+            const message = `🚨 *নতুন উইথড্র রিকোয়েস্ট (KS Bot)*\n\n👤 ইউজার: ${telegramUser}\n📱 মেথড: ${selectedPaymentMethod}\n📞 নম্বর: \`${num}\`\n💰 পরিমাণ: ${amt} BDT`;
+
+            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: ADMIN_CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            }).then(res => {
+                userBalance -= amt;
+                totalWithdrawnAmount += amt;
+                updateUI();
+
+                document.getElementById('accNumber').value = '';
+                document.getElementById('withdrawAmt').value = '';
+
+                alert(`আপনার ${amt} টাকার উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে।`);
+            }).catch(err => {
+                alert("উইথড্র প্রসেস করতে সমস্যা হয়েছে।");
+            });
+        }
+
+        function updateUI() {
+            document.getElementById('userBalance').innerText = userBalance.toFixed(2);
+            document.getElementById('totalAds').innerText = `${totalAdsWatched} টি`;
+            document.getElementById('totalWithdrawn').innerText = `৳ ${totalWithdrawnAmount.toFixed(2)}`;
+        }
+    </script>
+</body>
+      </html>
