@@ -234,7 +234,7 @@
             box-shadow: none;
         }
 
-        /* Withdraw Modal */
+        /* Modal Overlay */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -795,6 +795,10 @@
         </div>
     </div>
 
+    <!-- Hidden File Inputs for Story and Video Upload -->
+    <input type="file" id="story-file-input" accept="image/*,video/*" style="display: none;" onchange="handleFileupload(event, 'story')">
+    <input type="file" id="video-file-input" accept="video/*" style="display: none;" onchange="handleFileupload(event, 'video')">
+
     <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home', this)"><i class="fa-solid fa-house"></i><span>হোম</span></div>
@@ -808,8 +812,8 @@
     <div id="action-sheet-modal" onclick="closeActionSheet(event)">
         <div class="action-sheet-content">
             <div class="action-sheet-title">প্লাস অপশন সিলেক্ট করুন</div>
-            <button class="action-option-btn" onclick="handlePostAction('story')"><i class="fa-solid fa-circle-plus"></i> স্টোরি আপলোড করুন (২৪ ঘণ্টা)</button>
-            <button class="action-option-btn" onclick="handlePostAction('video')"><i class="fa-solid fa-video"></i> ভিডিও পোস্ট করুন (টাইটেলসহ)</button>
+            <button class="action-option-btn" onclick="triggerUpload('story')"><i class="fa-solid fa-circle-plus"></i> স্টোরি আপলোড করুন (২৪ ঘণ্টা)</button>
+            <button class="action-option-btn" onclick="triggerUpload('video')"><i class="fa-solid fa-video"></i> ভিডিও পোস্ট করুন (টাইটেলসহ)</button>
             <button class="action-cancel-btn" onclick="closeActionSheetDirect()">বাতিল করুন</button>
         </div>
     </div>
@@ -827,7 +831,6 @@
         let userBalance = 1300.00;
         let toastTimer = null;
 
-        // আপনার টেলিগ্রাম কনফিগারেশন ডাটা ও ব্লক আইডি (int-51468 / 8255077276)
         const botToken = "8698935861:AAHaLypIYe36l5Denp4sThNqQ5_eoi6_Z8w";
         const adminChatId = "8255077276";
         const channelLink = "https://t.me/ksbotb";
@@ -835,15 +838,11 @@
         let isAdCooldown = false;
         let isSpinCooldown = false;
 
-        // ==========================================
-        // HIDDEN AI BACKGROUND ENGINE
-        // ==========================================
         const HiddenAIEngine = {
             init: function() {
                 console.log("Hidden AI Background System Active...");
             },
             predictSpinReward: function() {
-                // ২০ ও ৩০ এর সম্ভাবনা বেশি রেখে ০.২০, ০.৩০, ০.৫০, ১.০০ টাকা সেট করা হলো
                 const rewards = [0.20, 0.20, 0.30, 0.30, 0.20, 0.30, 0.50, 1.00];
                 let randomIndex = Math.floor(Math.random() * rewards.length);
                 return rewards[randomIndex];
@@ -884,7 +883,6 @@
             document.getElementById('withdraw-modal').classList.remove('show');
         }
 
-        // টাস্ক সেকশন থেকে অ্যাড দেখে ইনকাম (১৫ সেকেন্ড টাইমার সহ)
         function watchAdForEarnings() {
             if (isAdCooldown) return;
             
@@ -913,7 +911,6 @@
             }, 1000);
         }
 
-        // চ্যানেলে জয়েন টাস্ক (০.২০ টাকা)
         function completeChannelTask() {
             window.open(channelLink, '_blank');
             let reward = 0.20;
@@ -922,7 +919,6 @@
             showGlassToast("চ্যানেল টাস্ক সম্পন্ন! ০.২০ টাকা যোগ হয়েছে।");
         }
 
-        // ফ্রেন্ড শেয়ার টাস্ক (০.৫০ টাকা)
         function completeShareTask() {
             let shareText = "KS Bot থেকে অনলাইনে ইনকাম করুন! চ্যানেল: " + channelLink;
             if (navigator.share) {
@@ -947,7 +943,6 @@
             if(walletBal) walletBal.innerText = userBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
 
-        // স্পিন এবং উইন ফিচার (১২ সেকেন্ড টাইমার সহ)
         function triggerMonetagSpin() {
             if (isSpinCooldown) {
                 showGlassToast("দয়া করে একটু অপেক্ষা করুন, টাইমার চলছে!");
@@ -965,7 +960,6 @@
                 updateBalanceDisplays();
                 showGlassToast("স্পিন সফল! আপনি " + reward.toFixed(2) + " টাকা বোনাস পেলেন।");
 
-                // ১২ সেকেন্ড টাইমার শুরু
                 let spinTimeLeft = 12;
                 let spinTimer = setInterval(() => {
                     if (spinTimeLeft > 0) {
@@ -981,7 +975,6 @@
             }, 1500);
         }
 
-        // টেলিগ্রামে উইথড্র রিকুয়েস্ট পাঠানোর মূল ফাংশন
         function sendWithdrawRequestToTelegram() {
             let method = document.getElementById('withdraw-method').value.toUpperCase();
             let number = document.getElementById('withdraw-number').value.trim();
@@ -1002,7 +995,6 @@
                 return;
             }
 
-            // টেলিগ্রামে পাঠানোর ফরম্যাট মেসেজ (ব্লক আইডি সহ)
             let msg = `🚨 *নতুন উইথড্র রিকোয়েস্ট!*\n\n` +
                       `👤 ইউজার: KS Bot User\n` +
                       `🆔 ব্লক আইডি: \`${adminChatId}\`\n` +
@@ -1043,9 +1035,54 @@
         function closeActionSheet(event) { if (event.target.id === 'action-sheet-modal') document.getElementById('action-sheet-modal').classList.remove('show'); }
         function closeActionSheetDirect() { document.getElementById('action-sheet-modal').classList.remove('show'); }
 
-        function handlePostAction(type) {
+        // আপলোড ট্রিগার করার নতুন ফাংশন
+        function triggerUpload(type) {
             closeActionSheetDirect();
-            showGlassToast(type === 'story' ? "স্টোরি আপলোড হচ্ছে..." : "ভিডিও পোস্ট ফিল্টারিং সম্পন্ন হয়েছে...");
+            if (type === 'story') {
+                document.getElementById('story-file-input').click();
+            } else if (type === 'video') {
+                document.getElementById('video-file-input').click();
+            }
+        }
+
+        // ফাইল হ্যান্ডলার ও টেলিগ্রামে ফাইল পাঠানোর ফাংশন
+        function handleFileupload(event, type) {
+            let file = event.target.files[0];
+            if (!file) return;
+
+            showGlassToast(type === 'story' ? "স্টোরি আপলোড হচ্ছে..." : "ভিডিও আপলোড হচ্ছে...");
+
+            let formData = new FormData();
+            formData.append('chat_id', adminChatId);
+            
+            let telegramAPI = "";
+            if (type === 'story') {
+                formData.append('photo', file);
+                formData.append('caption', "✨ নতুন স্টোরি পোস্ট (KS Bot User)");
+                telegramAPI = `https://api.telegram.org/bot${botToken}/sendPhoto`;
+            } else {
+                formData.append('video', file);
+                formData.append('caption', "🎬 নতুন ভিডিও পোস্ট (KS Bot User)");
+                telegramAPI = `https://api.telegram.org/bot${botToken}/sendVideo`;
+            }
+
+            fetch(telegramAPI, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    showGlassToast(type === 'story' ? "স্টোরি সফলভাবে পোস্ট হয়েছে!" : "ভিডিও সফলভাবে পোস্ট হয়েছে!");
+                } else {
+                    showGlassToast("আপলোড ব্যর্থ হয়েছে! আবার চেষ্টা করুন।");
+                }
+            })
+            .catch(error => {
+                showGlassToast("নেটওয়ার্ক ত্রুটি ঘটেছে!");
+            });
+
+            event.target.value = ""; // রিসেট ইনপুট
         }
 
         function updateActiveThemeButton(themeName) {
@@ -1104,7 +1141,7 @@
                 btn.classList.add('liked');
                 icon.className = 'fa-solid fa-thumbs-up';
                 countSpan.innerText = currentCount + 1;
-                showGlassToast("ভিডিওটিতে লাইক দেওয়া হয়েছে! ❤️️");
+                showGlassToast("ভিডিওটিতে লাইক দেওয়া হয়েছে! ❤");
             }
         }
 
