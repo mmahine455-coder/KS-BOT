@@ -202,6 +202,106 @@
         }
         .card span { font-size: 12px; font-weight: 500; color: var(--text-main); }
 
+        /* Task & Ad Section Styles */
+        .task-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .task-item {
+            background: var(--glass-bg);
+            backdrop-filter: var(--ios-blur);
+            border: 1px solid var(--glass-border);
+            padding: 14px 16px;
+            border-radius: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--glow-shadow);
+        }
+        .task-info h5 { font-size: 13px; color: var(--text-main); margin-bottom: 3px; }
+        .task-info p { font-size: 11px; color: var(--text-muted); }
+        .task-action-btn {
+            background: var(--primary-red);
+            border: none;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 23, 68, 0.3);
+        }
+        .task-action-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Withdraw Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .withdraw-modal-box {
+            background: var(--toast-bg);
+            border: 1px solid var(--glass-border);
+            width: 90%;
+            max-width: 360px;
+            padding: 22px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.1, 1, 0.1, 1);
+        }
+        .modal-overlay.show .withdraw-modal-box { transform: scale(1); }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .modal-header h4 { font-size: 15px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .modal-header h4 i { color: var(--primary-red); }
+        .modal-close-btn { background: none; border: none; font-size: 18px; color: var(--text-muted); cursor: pointer; }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
+        .form-control {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            padding: 12px 14px;
+            border-radius: 14px;
+            color: var(--text-main);
+            font-size: 13px;
+            outline: none;
+        }
+        .withdraw-submit-btn {
+            width: 100%;
+            background: var(--primary-red);
+            border: none;
+            color: #fff;
+            padding: 14px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(255, 23, 68, 0.3);
+        }
+
         /* Video Feed Styles */
         .video-feed-header {
             display: flex;
@@ -524,13 +624,13 @@
         </div>
 
         <div class="grid-container">
-            <div class="card" onclick="triggerAdgramTask()">
+            <div class="card" onclick="switchTabByCode('tasks')">
                 <div class="card-icon"><i class="fa-solid fa-briefcase"></i></div>
                 <span>Start Task</span>
             </div>
             <div class="card" onclick="triggerMonetagSpin()">
                 <div class="card-icon"><i class="fa-solid fa-rotate"></i></div>
-                <span>Spin & Win</span>
+                <span id="spin-card-label">Spin & Win</span>
             </div>
             <div class="card" onclick="switchTabByCode('profile')">
                 <div class="card-icon"><i class="fa-solid fa-user-gear"></i></div>
@@ -540,13 +640,48 @@
                 <div class="card-icon"><i class="fa-solid fa-crown"></i></div>
                 <span>Top Users</span>
             </div>
-            <div class="card" onclick="openPage('Withdraw')">
+            <div class="card" onclick="openWithdrawModal()">
                 <div class="card-icon"><i class="fa-solid fa-wallet"></i></div>
                 <span>Withdraw</span>
             </div>
             <div class="card" onclick="openPage('Refer')">
                 <div class="card-icon"><i class="fa-solid fa-share-nodes"></i></div>
                 <span>Refer</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TASKS & WATCH AD SECTION -->
+    <div id="tasks-section" class="page-section">
+        <div class="welcome-banner">
+            <i class="fa-solid fa-list-check"></i>
+            <div class="welcome-text">
+                <h4>ইনকাম ও অ্যাড টাস্কসমূহ</h4>
+                <p>বিজ্ঞাপন দেখুন, ১৫ সেকেন্ড টাইমার পার করুন এবং আয় করুন</p>
+            </div>
+        </div>
+
+        <div class="task-list">
+            <div class="task-item">
+                <div class="task-info">
+                    <h5>অ্যাড দেখে ইনকাম করুন</h5>
+                    <p id="ad-task-desc">রিওয়ার্ড: ০.৫০ টাকা প্রতি অ্যাড (১৫ সেঃ টাইমার)</p>
+                </div>
+                <button id="watch-ad-btn" class="task-action-btn" onclick="watchAdForEarnings()">অ্যাড দেখুন</button>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <h5>চ্যানেলে জয়েন করুন</h5>
+                    <p>রিওয়ার্ড: ০.২০ টাকা</p>
+                </div>
+                <button class="task-action-btn" onclick="completeChannelTask()">জয়েন করুন</button>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <h5>ফ্রেন্ড শেয়ার করুন</h5>
+                    <p>রিওয়ার্ড: ০.৫০ টাকা</p>
+                </div>
+                <button class="task-action-btn" onclick="completeShareTask()">শেয়ার করুন</button>
             </div>
         </div>
     </div>
@@ -589,7 +724,7 @@
         <div class="header" style="justify-content: center; text-align: center; flex-direction: column; gap: 10px;">
             <span style="font-size: 12px; color: var(--text-muted);">মোট ব্যালেন্স</span>
             <h1 style="font-size: 28px; color: var(--text-main);"><span id="wallet-page-balance">1,300</span> BDT</h1>
-            <button class="upload-btn-mini" style="padding: 10px 20px; margin-top: 10px; background: var(--primary-red); color:#fff; border:none; border-radius:12px; font-weight:600; cursor:pointer;" onclick="openPage('Withdraw')">উইথড্র করুন</button>
+            <button class="upload-btn-mini" style="padding: 10px 20px; margin-top: 10px; background: var(--primary-red); color:#fff; border:none; border-radius:12px; font-weight:600; cursor:pointer;" onclick="openWithdrawModal()">উইথড্র করুন</button>
         </div>
     </div>
 
@@ -630,6 +765,36 @@
         </div>
     </div>
 
+    <!-- WITHDRAW MODAL INTERFACE -->
+    <div id="withdraw-modal" class="modal-overlay">
+        <div class="withdraw-modal-box">
+            <div class="modal-header">
+                <h4><i class="fa-solid fa-money-bill-transfer"></i> বিকাশ / নগদ উইথড্র</h4>
+                <button class="modal-close-btn" onclick="closeWithdrawModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="form-group">
+                <label>পেমেন্ট মেথড সিলেক্ট করুন</label>
+                <select id="withdraw-method" class="form-control">
+                    <option value="bkash">বিকাশ (bKash)</option>
+                    <option value="nagad">নগদ (Nagad)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>আপনার অ্যাকাউন্ট নাম্বার</label>
+                <input type="number" id="withdraw-number" class="form-control" placeholder="যেমন: 017xxxxxxxx">
+            </div>
+
+            <div class="form-group">
+                <label>টাকার পরিমাণ (BDT)</label>
+                <input type="number" id="withdraw-amount" class="form-control" placeholder="পরিমাণ লিখুন">
+            </div>
+
+            <button class="withdraw-submit-btn" onclick="sendWithdrawRequestToTelegram()">রিকুয়েষ্ট পাঠান</button>
+        </div>
+    </div>
+
     <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home', this)"><i class="fa-solid fa-house"></i><span>হোম</span></div>
@@ -659,36 +824,32 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        let userBalance = 1300;
+        let userBalance = 1300.00;
         let toastTimer = null;
 
+        // আপনার টেলিগ্রাম কনফিগারেশন ডাটা ও ব্লক আইডি (int-51468 / 8255077276)
+        const botToken = "8698935861:AAHaLypIYe36l5Denp4sThNqQ5_eoi6_Z8w";
+        const adminChatId = "8255077276";
+        const channelLink = "https://t.me/ksbotb";
+
+        let isAdCooldown = false;
+        let isSpinCooldown = false;
+
         // ==========================================
-        // HIDDEN AI BACKGROUND ENGINE (সম্পূর্ণ গোপন লজিক)
+        // HIDDEN AI BACKGROUND ENGINE
         // ==========================================
         const HiddenAIEngine = {
             init: function() {
                 console.log("Hidden AI Background System Active...");
-                this.runBackgroundAuditing();
             },
-            runBackgroundAuditing: function() {
-                // নীরবে ইউজার অ্যাক্টিভিটি ট্র্যাক এবং মডারেশন করা
-                setInterval(() => {
-                    // ব্যাকগ্রাউন্ডে এআই ফ্রড ডিটেকশন ও ডেটা অপ্টিমাইজ করছে
-                }, 10000);
-            },
-            analyzeContent: function(text) {
-                // ইউজার বা পোস্টের কনটেন্ট এআই দিয়ে সিক্রেটলি চেক করা
-                return "AI Approved: Secure & Clean Content.";
-            },
-            predictReward: function(taskType) {
-                // অ্যাড বা টাস্ক অনুযায়ী ডায়নামিক রেওয়ার্ড হিসাব করা
-                if(taskType === 'adgram') return 0.50; // ০.৫০ টাকা প্রতি টাস্ক
-                if(taskType === 'monetag') return 1.00; // ১.০০ টাকা প্রতি অ্যাড স্পিন
-                return 0.25;
+            predictSpinReward: function() {
+                // ২০ ও ৩০ এর সম্ভাবনা বেশি রেখে ০.২০, ০.৩০, ০.৫০, ১.০০ টাকা সেট করা হলো
+                const rewards = [0.20, 0.20, 0.30, 0.30, 0.20, 0.30, 0.50, 1.00];
+                let randomIndex = Math.floor(Math.random() * rewards.length);
+                return rewards[randomIndex];
             }
         };
 
-        // সিস্টেম লোড হওয়ার সাথে সাথে হিডেন এআই চালু করা
         HiddenAIEngine.init();
 
         function showGlassToast(message) {
@@ -708,7 +869,174 @@
 
         function switchTabByCode(tabName) {
             let navItems = document.querySelectorAll('.nav-item');
-            switchTab(tabName, navItems[3]);
+            if (tabName === 'tasks') {
+                switchTab('tasks', navItems[0]); 
+            } else if (tabName === 'profile') {
+                switchTab('profile', navItems[4]);
+            }
+        }
+
+        function openWithdrawModal() {
+            document.getElementById('withdraw-modal').classList.add('show');
+        }
+
+        function closeWithdrawModal() {
+            document.getElementById('withdraw-modal').classList.remove('show');
+        }
+
+        // টাস্ক সেকশন থেকে অ্যাড দেখে ইনকাম (১৫ সেকেন্ড টাইমার সহ)
+        function watchAdForEarnings() {
+            if (isAdCooldown) return;
+            
+            let adBtn = document.getElementById('watch-ad-btn');
+            isAdCooldown = true;
+            adBtn.disabled = true;
+
+            showGlassToast("বিজ্ঞাপন শুরু হয়েছে, ১৫ সেকেন্ড অপেক্ষা করুন...");
+            
+            let timeLeft = 15;
+            let timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    adBtn.innerText = `অপেক্ষা করুন (${timeLeft}s)`;
+                    timeLeft--;
+                } else {
+                    clearInterval(timerInterval);
+                    let reward = 0.50;
+                    userBalance += reward;
+                    updateBalanceDisplays();
+                    showGlassToast("সফলভাবে অ্যাড দেখা সম্পন্ন! ০.৫০ টাকা যোগ হয়েছে।");
+                    
+                    adBtn.innerText = "অ্যাড দেখুন";
+                    adBtn.disabled = false;
+                    isAdCooldown = false;
+                }
+            }, 1000);
+        }
+
+        // চ্যানেলে জয়েন টাস্ক (০.২০ টাকা)
+        function completeChannelTask() {
+            window.open(channelLink, '_blank');
+            let reward = 0.20;
+            userBalance += reward;
+            updateBalanceDisplays();
+            showGlassToast("চ্যানেল টাস্ক সম্পন্ন! ০.২০ টাকা যোগ হয়েছে।");
+        }
+
+        // ফ্রেন্ড শেয়ার টাস্ক (০.৫০ টাকা)
+        function completeShareTask() {
+            let shareText = "KS Bot থেকে অনলাইনে ইনকাম করুন! চ্যানেল: " + channelLink;
+            if (navigator.share) {
+                navigator.share({ title: 'KS Bot', text: shareText, url: channelLink }).then(() => {
+                    let reward = 0.50;
+                    userBalance += reward;
+                    updateBalanceDisplays();
+                    showGlassToast("শেয়ার সফল! ০.৫০ টাকা যোগ হয়েছে।");
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(shareText);
+                let reward = 0.50;
+                userBalance += reward;
+                updateBalanceDisplays();
+                showGlassToast("লিংক কপি হয়েছে! ০.৫০ টাকা যোগ হয়েছে।");
+            }
+        }
+
+        function updateBalanceDisplays() {
+            document.getElementById('user-balance').innerText = userBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            let walletBal = document.getElementById('wallet-page-balance');
+            if(walletBal) walletBal.innerText = userBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        // স্পিন এবং উইন ফিচার (১২ সেকেন্ড টাইমার সহ)
+        function triggerMonetagSpin() {
+            if (isSpinCooldown) {
+                showGlassToast("দয়া করে একটু অপেক্ষা করুন, টাইমার চলছে!");
+                return;
+            }
+
+            isSpinCooldown = true;
+            let spinLabel = document.getElementById('spin-card-label');
+            
+            showGlassToast("স্পিন হুইল ঘুরছে...");
+            
+            setTimeout(() => {
+                let reward = HiddenAIEngine.predictSpinReward();
+                userBalance += reward;
+                updateBalanceDisplays();
+                showGlassToast("স্পিন সফল! আপনি " + reward.toFixed(2) + " টাকা বোনাস পেলেন।");
+
+                // ১২ সেকেন্ড টাইমার শুরু
+                let spinTimeLeft = 12;
+                let spinTimer = setInterval(() => {
+                    if (spinTimeLeft > 0) {
+                        spinLabel.innerText = `অপেক্ষা (${spinTimeLeft}s)`;
+                        spinTimeLeft--;
+                    } else {
+                        clearInterval(spinTimer);
+                        spinLabel.innerText = "Spin & Win";
+                        isSpinCooldown = false;
+                    }
+                }, 1000);
+
+            }, 1500);
+        }
+
+        // টেলিগ্রামে উইথড্র রিকুয়েস্ট পাঠানোর মূল ফাংশন
+        function sendWithdrawRequestToTelegram() {
+            let method = document.getElementById('withdraw-method').value.toUpperCase();
+            let number = document.getElementById('withdraw-number').value.trim();
+            let amount = parseFloat(document.getElementById('withdraw-amount').value);
+
+            if (!number || number.length < 11) {
+                showGlassToast("দয়া করে সঠিক ১১ ডিজিটের নাম্বার দিন!");
+                return;
+            }
+
+            if (isNaN(amount) || amount <= 0) {
+                showGlassToast("দয়া করে সঠিক টাকার পরিমাণ লিখুন!");
+                return;
+            }
+
+            if (amount > userBalance) {
+                showGlassToast("আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই!");
+                return;
+            }
+
+            // টেলিগ্রামে পাঠানোর ফরম্যাট মেসেজ (ব্লক আইডি সহ)
+            let msg = `🚨 *নতুন উইথড্র রিকোয়েস্ট!*\n\n` +
+                      `👤 ইউজার: KS Bot User\n` +
+                      `🆔 ব্লক আইডি: \`${adminChatId}\`\n` +
+                      `💳 মাধ্যম: ${method}\n` +
+                      `📞 নাম্বার: \`${number}\`\n` +
+                      `💰 পরিমাণ: *${amount} BDT*`;
+
+            let telegramAPI = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            
+            fetch(telegramAPI, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: adminChatId,
+                    text: msg,
+                    parse_mode: 'Markdown'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    userBalance -= amount;
+                    updateBalanceDisplays();
+                    closeWithdrawModal();
+                    showGlassToast("উইথড্র রিকোয়েস্ট সফলভাবে আপনার টেলিগ্রামে পাঠানো হয়েছে!");
+                    document.getElementById('withdraw-number').value = "";
+                    document.getElementById('withdraw-amount').value = "";
+                } else {
+                    showGlassToast("মেসেজ পাঠাতে সমস্যা হয়েছে, বট টোকেন চেক করুন।");
+                }
+            })
+            .catch(error => {
+                showGlassToast("নেটওয়ার্ক ত্রুটি! দয়া করে আবার চেষ্টা করুন।");
+            });
         }
 
         function openActionSheet() { document.getElementById('action-sheet-modal').classList.add('show'); }
@@ -717,15 +1045,7 @@
 
         function handlePostAction(type) {
             closeActionSheetDirect();
-            // হিডেন এআই দিয়ে পোস্ট ভেরিফাই করা হচ্ছে
-            let aiCheck = HiddenAIEngine.analyzeContent(type);
-            console.log(aiCheck);
-
-            if (type === 'story') {
-                showGlassToast("স্টোরি এআই মডারেশনের মাধ্যমে আপলোড হচ্ছে...");
-            } else {
-                showGlassToast("ভিডিও পোস্ট এআই ফিল্টারিং সম্পন্ন হয়েছে...");
-            }
+            showGlassToast(type === 'story' ? "স্টোরি আপলোড হচ্ছে..." : "ভিডিও পোস্ট ফিল্টারিং সম্পন্ন হয়েছে...");
         }
 
         function updateActiveThemeButton(themeName) {
@@ -743,34 +1063,12 @@
             document.documentElement.className = themeName;
             localStorage.setItem('ks_app_theme', themeName);
             updateActiveThemeButton(themeName);
-            showGlassToast(themeName === 'dark-theme' ? "ডার্ক রেড লিকুইড গ্লাস থিম সিলেক্ট করা হয়েছে।" : "ক্রিস্টাল হোয়াইট ওয়াটার গ্লাস থিম সিলেক্ট করা হয়েছে।");
+            showGlassToast("থিম পরিবর্তন করা হয়েছে।");
         }
 
         let activeTheme = localStorage.getItem('ks_app_theme') || 'dark-theme';
         document.documentElement.className = activeTheme;
         updateActiveThemeButton(activeTheme);
-
-        function triggerAdgramTask() {
-            showGlassToast("টাস্ক লোড হচ্ছে...");
-            setTimeout(() => {
-                let reward = HiddenAIEngine.predictReward('adgram');
-                userBalance += reward;
-                document.getElementById('user-balance').innerText = userBalance.toLocaleString();
-                document.getElementById('wallet-page-balance').innerText = userBalance.toLocaleString();
-                showGlassToast("টাস্ক সম্পন্ন! " + reward + " টাকা যোগ হয়েছে।");
-            }, 1500);
-        }
-
-        function triggerMonetagSpin() {
-            showGlassToast("স্পিন অ্যাড লোড হচ্ছে...");
-            setTimeout(() => {
-                let reward = HiddenAIEngine.predictReward('monetag');
-                userBalance += reward;
-                document.getElementById('user-balance').innerText = userBalance.toLocaleString();
-                document.getElementById('wallet-page-balance').innerText = userBalance.toLocaleString();
-                showGlassToast("স্পিন সফল! " + reward + " টাকা বোনাস পেলেন।");
-            }, 1500);
-        }
 
         function sendAiMessage() {
             let inputField = document.getElementById('ai-user-input');
@@ -806,7 +1104,7 @@
                 btn.classList.add('liked');
                 icon.className = 'fa-solid fa-thumbs-up';
                 countSpan.innerText = currentCount + 1;
-                showGlassToast("ভিডিওটিতে লাইক দেওয়া হয়েছে! ❤️");
+                showGlassToast("ভিডিওটিতে লাইক দেওয়া হয়েছে! ❤️️");
             }
         }
 
@@ -815,4 +1113,4 @@
         function openPage(name) { showGlassToast(name + " পেজ খোলা হচ্ছে..."); }
     </script>
 </body>
-    </html>
+</html>
